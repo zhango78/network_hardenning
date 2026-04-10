@@ -1,0 +1,37 @@
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-04-10 02:18 +0000
+
+Nmap scan report for 10.10.20.20
+Host is up (0.00018s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.14 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    nginx 1.18.0 (Ubuntu)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 6.92 seconds
+
+---
+ANALYSIS:
+
+A. Open Ports
+  Port 80/tcp (HTTP): Open. Detected as nginx 1.18.0.
+  Port 22/tcp (SSH):  Open. Detected as OpenSSH 8.9p1.
+
+B. Compliance with Flow Matrix (Part B)
+  Expected flows:
+    - HTTP (80) is compliant with ID F01 (application testing).
+  Flows to review:
+    - SSH (22) is compliant with ID F02 but marked REVIEW.
+      The scan confirms it is currently accessible by any host on the LAN.
+
+C. Identified Risks (Unexpected/Risks)
+  1. Excessive SSH exposure: Port 22 is open to the entire 10.10.10.0/24 subnet.
+     This violates least privilege. An attacker on the LAN can directly attempt
+     intrusion on the DMZ server.
+  2. Information disclosure (Banner Grabbing): Exact versions of the web server
+     and SSH daemon are exposed. An attacker can search for specific exploits
+     (CVE) for nginx 1.18.0 and OpenSSH 8.9p1.
+  3. No firewall filtering: Nmap shows "Not shown: 998 closed tcp ports (reset)".
+     The fact ports are "closed" (not "filtered") proves no firewall is currently
+     blocking traffic between LAN and DMZ at the Gateway level.
