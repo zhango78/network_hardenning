@@ -1,0 +1,38 @@
+# Counters captured AFTER verification tests
+# Command: sudo nft list ruleset
+# Host: gw-fw
+# Date: 2026-04-10 ~11:20 UTC
+# Analysis: deny counter has incremented confirming negative tests were blocked
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+        iif "lo" counter packets 12 bytes 840 accept comment "loopback"
+        ct state established,related counter packets 87 bytes 9348 accept comment "stateful"
+        ip saddr 10.10.10.0/24 tcp dport 22 counter packets 3 bytes 180 log prefix "NFT_SSH_ALLOW " accept comment "A6-ssh-to-gw"
+        counter packets 6 bytes 360 log prefix "NFT_IN_DENY " limit rate 10/minute
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        ct state established,related counter packets 312 bytes 38420 accept comment "stateful"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 80 counter packets 8 bytes 480 accept comment "A1-http"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 443 counter packets 24 bytes 14832 accept comment "A2-https"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 22 counter packets 3 bytes 180 accept comment "A3-ssh"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.0/24 icmp type echo-request limit rate 5/second counter packets 4 bytes 240 accept comment "A4-icmp"
+        counter packets 18 bytes 1080 log prefix "NFT_FWD_DENY " limit rate 10/minute
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
+
+# ANALYSIS:
+# - forward A1-http:  8 packets (P1 test confirmed)
+# - forward A2-https: 24 packets (P2, P7, P8 tests confirmed)
+# - forward A3-ssh:   3 packets (P3 test confirmed)
+# - forward A4-icmp:  4 packets (P4 test confirmed)
+# - input  A6-ssh:    3 packets (P5 test confirmed)
+# - forward DENY:     18 packets (N1-N4 + TLS rejections confirmed blocked)
+# - input  DENY:      6 packets (unauthorized INPUT attempts blocked)

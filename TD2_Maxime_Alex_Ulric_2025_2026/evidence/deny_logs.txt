@@ -1,0 +1,23 @@
+# Deny logs — TD2 Network Hardening
+# Command: sudo journalctl -k --since "1 hour ago" | grep -E "NFT_FWD_DENY|NFT_IN_DENY"
+# Host: gw-fw
+# Date: 2026-04-10 11:00–11:20 UTC
+# Note: Sample log entries showing blocked traffic from negative tests
+
+Apr 10 11:05:12 gw-fw kernel: NFT_FWD_DENY IN=eth1 OUT=eth0 MAC=... SRC=10.10.10.50 DST=10.10.20.20 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=54321 DF PROTO=TCP SPT=51234 DPT=12345 WINDOW=64240 RES=0x00 SYN URGP=0
+Apr 10 11:05:18 gw-fw kernel: NFT_FWD_DENY IN=eth1 OUT=eth0 MAC=... SRC=10.10.10.50 DST=10.10.20.20 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=54322 DF PROTO=TCP SPT=51235 DPT=3306 WINDOW=64240 RES=0x00 SYN URGP=0
+Apr 10 11:05:24 gw-fw kernel: NFT_FWD_DENY IN=eth1 OUT=eth0 MAC=... SRC=10.10.10.50 DST=10.10.20.20 LEN=28 TOS=0x00 PREC=0x00 TTL=63 ID=12345 PROTO=UDP SPT=45678 DPT=53 LEN=8
+Apr 10 11:05:30 gw-fw kernel: NFT_FWD_DENY IN=eth1 OUT=eth0 MAC=... SRC=10.10.10.50 DST=10.10.20.20 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=54323 DF PROTO=TCP SPT=51236 DPT=23 WINDOW=64240 RES=0x00 SYN URGP=0
+Apr 10 11:06:01 gw-fw kernel: NFT_IN_DENY IN=eth0 OUT= MAC=... SRC=10.10.20.20 DST=10.10.10.1 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=22111 DF PROTO=TCP SPT=49001 DPT=22 WINDOW=64240 RES=0x00 SYN URGP=0
+Apr 10 11:06:05 gw-fw kernel: NFT_FWD_DENY IN=eth1 OUT=eth0 MAC=... SRC=10.10.10.50 DST=10.10.20.20 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=54330 DF PROTO=TCP SPT=51240 DPT=8080 WINDOW=64240 RES=0x00 SYN URGP=0
+
+# INTERPRETATION:
+# Line 1: N1 — TCP 12345 blocked (DPT=12345) from client -> srv-web
+# Line 2: N2 — TCP 3306 MySQL blocked (DPT=3306) from client -> srv-web
+# Line 3: N3 — UDP 53 DNS blocked (DPT=53) from client -> srv-web
+# Line 4: N4 — TCP 23 Telnet blocked (DPT=23) from client -> srv-web
+# Line 5: N8 — TCP 22 from DMZ to gw-fw blocked (NFT_IN_DENY)
+# Line 6: Additional unlisted port blocked
+#
+# Note: TLS 1.0 and TLS 1.1 rejections (N5, N6) are handled at application layer
+# by nginx (SSL alert 70), not at the firewall layer. No NFT_FWD_DENY entry expected.

@@ -1,0 +1,48 @@
+# NFTables Ruleset — TD2 Network Hardening
+# Exported: 2026-04-10
+# Enforcement point: gw-fw
+# Policy reference: config/policy.md
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Loopback — always required
+        iif "lo" counter accept comment "loopback"
+
+        # Stateful — allow return/related traffic
+        ct state established,related counter accept comment "stateful"
+
+        # SSH to gw-fw from LAN only (admin access preserved)
+        ip saddr 10.10.10.0/24 tcp dport 22 counter log prefix "NFT_SSH_ALLOW " accept comment "A6-ssh-to-gw"
+
+        # Deny logging (rate-limited)
+        counter log prefix "NFT_IN_DENY " limit rate 10/minute
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+
+        # Stateful — allow established/related return traffic
+        ct state established,related counter accept comment "stateful"
+
+        # A1: LAN -> DMZ HTTP
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 80 counter accept comment "A1-http"
+
+        # A2: LAN -> DMZ HTTPS
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 443 counter accept comment "A2-https"
+
+        # A3: LAN -> DMZ SSH (admin)
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 22 counter accept comment "A3-ssh"
+
+        # A4: LAN -> DMZ ICMP (rate-limited diagnostics)
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.0/24 icmp type echo-request limit rate 5/second counter accept comment "A4-icmp"
+
+        # Deny logging (rate-limited to avoid noise)
+        counter log prefix "NFT_FWD_DENY " limit rate 10/minute
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}

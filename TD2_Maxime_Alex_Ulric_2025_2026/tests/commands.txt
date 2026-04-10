@@ -1,0 +1,76 @@
+# Test Commands — TD2 Network Hardening
+# All commands executed from: client (10.10.10.50)
+# Target: srv-web (10.10.20.20)
+# Date: 2026-04-10
+
+# ============================================================
+# POSITIVE TESTS (must succeed per policy)
+# ============================================================
+
+# P1 — HTTP to srv-web (A1)
+curl -sI http://10.10.20.20 | head -5
+
+# P2 — HTTPS to srv-web (A2) — TLS 1.3 negotiated
+curl -skv https://10.10.20.20 2>&1
+
+# P3 — SSH to srv-web (A3)
+ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no adminX@10.10.20.20 whoami
+
+# P4 — ICMP to srv-web (A4)
+ping -c 2 10.10.20.20
+
+# P5 — SSH to gw-fw from LAN (A6)
+ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no adminX@10.10.10.1 whoami
+
+# P6 — ICMP to gw-fw
+ping -c 2 10.10.10.1
+
+# P7 — TLS 1.2 accepted (openssl s_client)
+openssl s_client -connect 10.10.20.20:443 -tls1_2 < /dev/null
+
+# P8 — TLS 1.3 accepted
+openssl s_client -connect 10.10.20.20:443 -tls1_3 < /dev/null
+
+# ============================================================
+# NEGATIVE TESTS (must fail/be blocked per policy)
+# ============================================================
+
+# N1 — Random high port on srv-web (unlisted)
+nc -vz -w 3 10.10.20.20 12345
+
+# N2 — MySQL port (not in matrix)
+nc -vz -w 3 10.10.20.20 3306
+
+# N3 — DNS on srv-web (not offered)
+nc -uvz -w 3 10.10.20.20 53
+
+# N4 — Telnet (not in matrix)
+nc -vz -w 3 10.10.20.20 23
+
+# N5 — TLS 1.0 rejected by srv-web
+openssl s_client -connect 10.10.20.20:443 -tls1 < /dev/null
+
+# N6 — TLS 1.1 rejected by srv-web
+openssl s_client -connect 10.10.20.20:443 -tls1_1 < /dev/null
+
+# N7 — HTTP 403 returned for unknown virtual host
+curl -v -k https://10.10.20.20/ -H "Host: unknown.local"
+
+# N8 — DMZ -> LAN blocked (run from srv-web)
+# nc -vz -w 3 10.10.10.50 22
+
+# ============================================================
+# COUNTER COLLECTION
+# ============================================================
+
+# Before tests (on gw-fw)
+sudo nft list ruleset > evidence/counters_before.txt
+
+# After tests (on gw-fw)
+sudo nft list ruleset > evidence/counters_after.txt
+
+# Deny log collection (on gw-fw)
+sudo journalctl -k --since "1 hour ago" | grep -E "NFT_FWD_DENY|NFT_IN_DENY" | tail -30 > evidence/deny_logs.txt
+
+# TLS scan
+testssl.sh 10.10.20.20:443 > evidence/tls_scan.txt

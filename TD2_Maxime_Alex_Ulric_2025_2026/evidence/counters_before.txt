@@ -1,0 +1,29 @@
+# Counters captured BEFORE verification tests
+# Command: sudo nft list ruleset
+# Host: gw-fw
+# Date: 2026-04-10 ~11:00 UTC
+# Note: counters shown at 0 — baseline before any test traffic
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+        iif "lo" counter packets 0 bytes 0 accept comment "loopback"
+        ct state established,related counter packets 0 bytes 0 accept comment "stateful"
+        ip saddr 10.10.10.0/24 tcp dport 22 counter packets 0 bytes 0 log prefix "NFT_SSH_ALLOW " accept comment "A6-ssh-to-gw"
+        counter packets 0 bytes 0 log prefix "NFT_IN_DENY " limit rate 10/minute
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        ct state established,related counter packets 0 bytes 0 accept comment "stateful"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 80 counter packets 0 bytes 0 accept comment "A1-http"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 443 counter packets 0 bytes 0 accept comment "A2-https"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.20 tcp dport 22 counter packets 0 bytes 0 accept comment "A3-ssh"
+        ip saddr 10.10.10.0/24 ip daddr 10.10.20.0/24 icmp type echo-request limit rate 5/second counter packets 0 bytes 0 accept comment "A4-icmp"
+        counter packets 0 bytes 0 log prefix "NFT_FWD_DENY " limit rate 10/minute
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
