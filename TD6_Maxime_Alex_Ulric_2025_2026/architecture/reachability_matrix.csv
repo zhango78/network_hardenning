@@ -1,0 +1,6 @@
+ID,Source zone,Source asset,Dest zone,Dest asset,Proto,Port,Purpose,Owner,Status
+F01,LAN,client,DMZ,srv-web,TCP,22,SSH admin access — restrict in TD5,admin,ALLOW
+F04,LAN,client,DMZ,srv-web,TCP,80,HTTP — will upgrade to HTTPS in TD4,admin,ALLOW
+F05,LAN,client,DMZ,srv-web,TCP,443,HTTPS — not yet configured,admin,REVIEW
+F06,LAN,client,DMZ,srv-web,ICMP,*,Diagnostics — rate-limit in TD2,admin,ALLOW
+F10,any,any,any,any,*,*,Default deny rule — enforced in TD2,admin,DENY
