@@ -1,7 +1,0 @@
-# Extrait du durcissement SSH - TD5 Network Hardening
-PasswordAuthentication no
-PermitRootLogin no
-AllowUsers admin1
-PubkeyAuthentication yes
-MaxAuthTries 3
-LoginGraceTime 30

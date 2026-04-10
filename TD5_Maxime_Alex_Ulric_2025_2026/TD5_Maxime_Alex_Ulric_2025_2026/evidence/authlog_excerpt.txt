@@ -1,5 +1,0 @@
-Apr 10 20:30:15 siteB-srv sshd[2540]: Accepted publickey for admin1 from 10.10.10.50 port 52340 ssh2: ED25519 SHA256:FE6p8yv8vXWpY9zG8XqR8B2vK1N5mZ3L7Q9tA4bC1e0
-Apr 10 20:30:15 siteB-srv sshd[2540]: pam_unix(sshd:session): session opened for user admin1 by (uid=0)
-Apr 10 20:31:02 siteB-srv sshd[2588]: Connection closed by authenticating user admin1 10.10.10.50 port 52348 [preauth]
-Apr 10 20:31:45 siteB-srv sshd[2612]: Received disconnect from 10.10.10.50 port 52356:11: bye bye [preauth]
-Apr 10 20:31:45 siteB-srv sshd[2612]: Disconnected from authenticating user root 10.10.10.50 port 52356 [preauth]
