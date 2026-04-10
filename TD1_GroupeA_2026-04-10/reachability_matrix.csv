@@ -1,0 +1,8 @@
+ID,Source zone,Source asset,Destination zone,Destination asset,Proto,Port,Purpose,Owner,Status
+F01,LAN,client (10.10.10.50),DMZ,srv-web (10.10.20.20),TCP,80,Test acces application Web,QA Team,ALLOW
+F02,LAN,client (10.10.10.50),DMZ,srv-web (10.10.20.20),TCP,22,Administration SSH a distance,SysAdmin,REVIEW — restreindre par IP source
+F03,LAN,client (10.10.10.50),GW,gw-fw (10.10.10.10),ICMP,N/A,Test connectivite Gateway,Network Ops,ALLOW
+F04,LAN,client (10.10.10.50),DMZ,srv-web (10.10.20.20),ICMP,N/A,Test connectivite bout-en-bout,Network Ops,ALLOW
+F05,DMZ,srv-web (10.10.20.20),Internet,any,UDP/TCP,80/443,Mises a jour OS,SysAdmin,ALLOW — REVIEW outbound
+F06,DMZ,srv-web,LAN,client,TCP,N/A,Trafic de retour (stateful),auto,ALLOW (stateful)
+F07,any,any,any,any,any,any,Default deny,Security,DENY — log

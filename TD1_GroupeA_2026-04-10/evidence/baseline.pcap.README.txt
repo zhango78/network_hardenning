@@ -1,0 +1,19 @@
+# baseline.pcap — PLACEHOLDER
+#
+# Ce fichier doit être remplacé par la capture réelle générée sur la VM gw-fw ou sensor-ids.
+#
+# Commande utilisée pour générer la capture :
+#   sudo tcpdump -i ens5 -w evidence/baseline.pcap -nn
+#
+# Trafic de référence généré depuis kali (10.10.10.50) :
+#   curl http://10.10.20.20          -> F01 (TCP/80)
+#   ping -c 4 10.10.20.20            -> F04 (ICMP)
+#   ssh ubuntu@10.10.20.20 hostname  -> F02 (TCP/22)
+#
+# Filtres Wireshark recommandés pour l'analyse :
+#   http
+#   tcp.port == 22
+#   icmp
+#   tls
+#
+# Observations documentées : voir report.md (O1 à O5)
