@@ -1,0 +1,39 @@
+[1m
+#####################################################################[m
+  [1mtestssl.sh[m version [1m3.3dev[m from [1mhttps://testssl.sh/dev/[m
+  [1m([m[0;37m012a296 2026-04-09 11:53:23[m[1m)[m
+[1m
+  This program is free software. Distribution and modification under
+  GPLv2 permitted. USAGE w/o ANY WARRANTY. USE IT AT YOUR OWN RISK![m
+
+  Please file bugs @ [1mhttps://testssl.sh/bugs/[m
+[1m#####################################################################[m
+
+  Using [3mOpenSSL 1.0.2-bad (Mar 28 2025)[m  [~183 ciphers]
+  on kali:./bin/openssl.Linux.x86_64
+
+[1mTesting all IPv4 addresses (port 443): [m10.10.20.20
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+[7m Start 2026-04-10 11:18:29        -->> 10.10.20.20:443 (10.10.20.20) <<--[m
+
+ rDNS (10.10.20.20):     --
+ Service detected:       HTTP
+
+[1m[4m Testing protocols [m[4mvia sockets except NPN+ALPN [m
+
+[1m SSLv2      [m[1;32mnot offered (OK)[m
+[1m SSLv3      [m[1;32mnot offered (OK)[m
+[1m TLS 1      [mnot offered
+[1m TLS 1.1    [mnot offered
+[1m TLS 1.2    [m[1;32moffered (OK)[m
+[1m TLS 1.3    [m[1;32moffered (OK)[m: final
+[1m QUIC       [mnot offered or timed out
+[1m NPN/SPDY   [mhttp/1.1 (advertised)
+[1m ALPN/HTTP2 [mhttp/1.1 (offered)
+
+
+[7m Done 2026-04-10 11:18:34 [   6s] -->> 10.10.20.20:443 (10.10.20.20) <<--[m
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+[1mDone testing now all IP addresses (on port 443): [m10.10.20.20
+

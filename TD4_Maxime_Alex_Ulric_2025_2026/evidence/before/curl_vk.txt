@@ -1,0 +1,82 @@
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                              0*   Trying 10.10.20.20:443...
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [1672 bytes data]
+* SSL Trust: peer verification disabled
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [108 bytes data]
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+{ [791 bytes data]
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+{ [300 bytes data]
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+{ [4 bytes data]
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+} [37 bytes data]
+* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+} [16 bytes data]
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+{ [16 bytes data]
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384 / x25519 / RSASSA-PSS
+* ALPN: server accepted http/1.1
+* Server certificate:
+*   subject: CN=td4.local
+*   start date: Apr 10 09:36:29 2026 GMT
+*   expire date: Apr 17 09:36:29 2026 GMT
+*   issuer: CN=td4.local
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*  SSL certificate verification failed, continuing anyway!
+* Established connection to 10.10.20.20 (10.10.20.20 port 443) from 10.10.10.50 port 59192 
+* using HTTP/1.x
+} [5 bytes data]
+> GET / HTTP/1.1
+> Host: 10.10.20.20
+> User-Agent: curl/8.18.0
+> Accept: */*
+> 
+* Request completely sent off
+{ [5 bytes data]
+< HTTP/1.1 200 OK
+< Server: nginx/1.18.0 (Ubuntu)
+< Date: Fri, 10 Apr 2026 10:01:54 GMT
+< Content-Type: text/html
+< Content-Length: 612
+< Last-Modified: Tue, 21 Apr 2020 14:09:01 GMT
+< Connection: keep-alive
+< ETag: "5e9efe7d-264"
+< Accept-Ranges: bytes
+< 
+{ [612 bytes data]
+100    612 100    612   0      0 100.9k      0                              0100    612 100    612   0      0 99.82k      0                              0100    612 100    612   0      0 98.13k      0                              0
+* Connection #0 to host 10.10.20.20:443 left intact
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
